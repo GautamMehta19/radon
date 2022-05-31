@@ -1,2 +1,2 @@
-# radon
-Backend Cohort, May 2022-Sep 2022
+backend cohort, may 2022-sep 2022
+first demo for committing and pushing code
