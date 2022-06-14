@@ -1,22 +1,53 @@
+const orderModel= require("../models/orderModel")
+const productModel = require("../models/productModel")
+const userModel = require("../models/userModel")
+
 
 const mid1= function ( req, res, next) {
-    req.falana= "hi there. i am adding something new to the req object"
-    console.log("Hi I am a middleware named Mid1")
-    next()
+    const header= req.headers.isfreeappuser
+    if(!header){
+        res.send({msg: "request is missing a mandatory header"})
+    }else{
+        next()
+    }
 }
 
-const mid2= function ( req, res, next) {
-    console.log("Hi I am a middleware named Mid2")
-    next()
+
+
+const mid2= async function ( req, res, next) {
+    const header=req.headers.isfreeappuser
+    if(!header){
+        res.send({msg: "request is missing a mandatory header"})
+    }else{
+        next()
+    }
+    
 }
 
-const mid3= function ( req, res, next) {
-    console.log("Hi I am a middleware named Mid3")
-    next()
+const mid3= async function ( req, res, next) {
+    let data= req.body
+    let isUser= await userModel.findOne({_id:data.userId})
+    let isProduct=await productModel.findOne({_id:data.productId})
+
+    if(isUser && isProduct){
+        next()
+    }
+    else{
+        res.send({msg: "please provide correct userid and productid"})
+    }
 }
 
-const mid4= function ( req, res, next) {
-    console.log("Hi I am a middleware named Mid4")
+const mid4= async function ( req, res, next) {
+    let header= req.headers.isfreeappuser
+
+    if (header==false){
+        let balanced= await userModel.select({balance:1})
+        res.send({msg: "balanced sufficient"})
+    }
+    else{
+        
+        res.send({msg: "balanced insufficient"})
+    }
     next()
 }
 
