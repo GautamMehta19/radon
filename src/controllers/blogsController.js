@@ -141,7 +141,7 @@ const deleteByQuery = async function (req, res) {
 
       { $and: [data, { isDeleted: false }] },
 
-      { $set: { isDeleted: true ,DeletedAt:new Date()} },
+      { $set: { isDeleted: true ,deletedAt:new Date()} },
 
       { new: true })
 
