@@ -19,6 +19,9 @@ router.post("/blogs",BlogController.createBlog )
 router.get("/blogs",BlogController.displayBlog )
 router.get("/getAllBlogs",BlogController.getBlog)
 
+//---------Delete Blogs Using Blog Id----------//
+router.delete("/blogs/:blogId", BlogController.deleteBlogs) 
+
 
 
 module.exports = router;
