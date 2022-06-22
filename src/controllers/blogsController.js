@@ -130,47 +130,39 @@ const deleteBlogs = async function(req , res){
   }
 }
 
-const deleteBlog= async function (req, res){
-  try{
-    let filterCondition = req.query
-    if(Object.keys(filterCondition).length == 0){
-      let displayingData = await blogsModel.find({isDeleted : false , isPublished:true})
-      if(displayingData.length == 0){
-        return res.status(404).send({
-          status : false,
-          msg : "No documents found 1"
-        })
-      }
-      return res.status(200).send({
-        status : true, 
-        data : displayingData
-      })
-    }
-    let displayingData = await blogsModel.findByIdAndUpdate(  {filterCondition},{ $set: { isDeleted: false} })
-    if(displayingData.length == 0){
-      return res.status(404).send({
-        status : false,
-        msg : "No matcing document"
-      })
-    }
-     res.status(200).send({
-      status : true, 
-      data : displayingData
-    })
-  
-  
+//==============DeleteBYQuery==================/
+const deleteByQuery = async function (req, res) {
+
+  try {
+
+    let data = req.query; 
+
+      const deleteByQuery = await blogsModel.updateMany(
+
+      { $and: [data, { isDeleted: false }] },
+
+      { $set: { isDeleted: true ,DeletedAt:new Date()} },
+
+      { new: true })
+
+      if (deleteByQuery.modifiedCount==0) 
+      return res.status(400).send(
+        { status: false,
+           msg: "The Blog is already Deleted"
+         })
+
+      res.status(200).send({ status: true, msg: deleteByQuery })
   }
-  catch(err){
-    res.status(500).send({
-      status : false,
-      data : err.message
-    })
-    }
-  }
-  
+
+  catch (err) {
+      res.status(500).send({
+        status:false,
+        error: err.message 
+      })}
+}
 
 
 module.exports.createBlog=createBlog 
 module.exports.displayBlog=displayBlog 
 module.exports.deleteBlogs = deleteBlogs
-module.exports.deleteBlog=deleteBlog
+module.exports.deleteByQuery=deleteByQuery

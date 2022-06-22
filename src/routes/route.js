@@ -10,18 +10,17 @@ router.get("/test-me", function (req, res) {
 })
 //-----------Create Authors APi----------//
 router.post("/authors", AuthorController.authors)
-
-
 //------------Create blogs APIS---------//
 router.post("/blogs",BlogController.createBlog )
 
 //-----------Display Blogs API---------//
 router.get("/blogs",BlogController.displayBlog )
-// router.get("/getAllBlogs",BlogController.getBlog)
 
 //---------Delete Blogs Using Blog Id----------//
 router.delete("/blogs/:blogId", BlogController.deleteBlogs) 
-router.delete("/blogs",BlogController.deleteBlog)
+
+//================Delete by Query========================//
+router.delete("/blogs",BlogController.deleteByQuery)
 
 
 
