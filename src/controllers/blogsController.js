@@ -53,7 +53,7 @@ const createBlog= async function (req, res) {
 
 const displayBlog = async function (req, res){
 try{
-    let filterCondition = req.query
+  let filterCondition = req.query
   if(Object.keys(filterCondition).length == 0){
     let displayingData = await blogsModel.find({isDeleted : false , isPublished:true})
     if(displayingData.length == 0){
@@ -89,17 +89,6 @@ catch(err){
   }
 }
 
-<<<<<<< HEAD
-const getBlog=async function(req,res){
-  let getBlog=await blogsModel.find()
-  res.status(200).send({status:true,data:getBlog})
-}
-
-module.exports.createBlog=createBlog 
-module.exports.displayBlog=displayBlog 
-module.exports.getBlog=getBlog
-
-=======
 const deleteBlogs = async function(req , res){
   try{
       let requestBlogId = req.params.blogId
@@ -141,8 +130,47 @@ const deleteBlogs = async function(req , res){
   }
 }
 
+const deleteBlog= async function (req, res){
+  try{
+    let filterCondition = req.query
+    if(Object.keys(filterCondition).length == 0){
+      let displayingData = await blogsModel.find({isDeleted : false , isPublished:true})
+      if(displayingData.length == 0){
+        return res.status(404).send({
+          status : false,
+          msg : "No documents found 1"
+        })
+      }
+      return res.status(200).send({
+        status : true, 
+        data : displayingData
+      })
+    }
+    let displayingData = await blogsModel.findByIdAndUpdate(  {filterCondition},{ $set: { isDeleted: false} })
+    if(displayingData.length == 0){
+      return res.status(404).send({
+        status : false,
+        msg : "No matcing document"
+      })
+    }
+     res.status(200).send({
+      status : true, 
+      data : displayingData
+    })
+  
+  
+  }
+  catch(err){
+    res.status(500).send({
+      status : false,
+      data : err.message
+    })
+    }
+  }
+  
+
 
 module.exports.createBlog=createBlog 
 module.exports.displayBlog=displayBlog 
 module.exports.deleteBlogs = deleteBlogs
->>>>>>> 16f18286ca1b3f3e368c404e79e6b6eaf6359caa
+module.exports.deleteBlog=deleteBlog
