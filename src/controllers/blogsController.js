@@ -1,6 +1,10 @@
 const blogsModel = require("../models/blogsModel")
 const AuthorModel = require("../models/AuthorModel")
 
+
+// =====================createBlog==================
+
+
 const createBlog = async function (req, res) {
     try {
         let blog = req.body
@@ -54,6 +58,8 @@ const createBlog = async function (req, res) {
 }
 
 
+// =====================displayBlog==================
+
 
 const displayBlog = async function (req, res) {
     try {
@@ -91,7 +97,11 @@ const displayBlog = async function (req, res) {
             data: err.message
         })
     }
+
 }
+
+
+// =====================updateBlog==================
 
 
 const updateBlog = async function (req, res) {
@@ -175,6 +185,9 @@ const updateBlog = async function (req, res) {
 
 }
 
+
+// =====================deleteBlogs==================
+
 const deleteBlogs = async function (req, res) {
     try {
         let requestBlogId = req.params.blogId
@@ -217,7 +230,44 @@ const deleteBlogs = async function (req, res) {
 }
 
 
+// =====================DeleteBYQuery==================
+
+const deleteByQuery = async function (req, res) {
+
+    try {
+
+        let data = req.query;
+
+        const deleteByQuery = await blogsModel.updateMany(
+
+            { $and: [data, { isDeleted: false }] },
+
+            { $set: { isDeleted: true, deletedAt: new Date() } },
+
+            { new: true })
+
+        if (deleteByQuery.modifiedCount == 0)
+            return res.status(400).send(
+                {
+                    status: false,
+                    msg: "The Blog is already Deleted"
+                })
+
+        res.status(200).send({ status: true, msg: deleteByQuery })
+    }
+
+    catch (err) {
+        res.status(500).send({
+            status: false,
+            error: err.message
+        })
+    }
+}
+
+
+
 module.exports.createBlog = createBlog
 module.exports.displayBlog = displayBlog
 module.exports.updateBlog = updateBlog
 module.exports.deleteBlogs = deleteBlogs
+module.exports.deleteByQuery = deleteByQuery
