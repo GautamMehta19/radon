@@ -8,19 +8,24 @@ const BlogController=require("../controllers/blogsController")
 router.get("/test-me", function (req, res) {
     res.send("My first ever api!")
 })
-//-----------Create Authors APi----------//
-router.post("/authors", AuthorController.authors)
-//------------Create blogs APIS---------//
-router.post("/blogs",BlogController.createBlog )
 
-//-----------Display Blogs API---------//
-router.get("/blogs",BlogController.displayBlog )
+//1]-----------Create Authors APi----------//
+   router.post("/authors", AuthorController.authors)
 
-//---------Delete Blogs Using Blog Id----------//
-router.delete("/blogs/:blogId", BlogController.deleteBlogs) 
+//2]------------Create blogs APIS---------//
+   router.post("/blogs",BlogController.createBlog )
 
-//================Delete by Query========================//
-router.delete("/blogs",BlogController.deleteByQuery)
+//3]-----------Update Blog API----------//
+   router.put("/updateBlog/:blogId", BlogController.updateBlog)
+
+//4]-----------Display Blogs API---------//
+   router.get("/displayBlog",BlogController.displayBlog )
+
+//5]---------Delete Blogs Using Blog Id----------//
+   router.delete("/deleteBlogs/:blogId", BlogController.deleteBlogs) 
+
+//6]================Delete by Query========================//
+   router.delete("/deleteByQuery",BlogController.deleteByQuery)
 
 
 

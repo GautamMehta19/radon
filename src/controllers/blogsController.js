@@ -2,7 +2,7 @@ const blogsModel = require("../models/blogsModel")
 const AuthorModel = require("../models/AuthorModel")
 
 
-// =====================createBlog==================
+//================================Handler For Creating Blogs====================================//
 
 
 const createBlog = async function (req, res) {
@@ -58,12 +58,13 @@ const createBlog = async function (req, res) {
 }
 
 
-// =====================displayBlog==================
+//================================Handler For Displaying Blogs====================================//
 
 
 const displayBlog = async function (req, res) {
     try {
         let filterCondition = req.query
+        console.log(filterCondition)
         if (Object.keys(filterCondition).length == 0) {
             let displayingData = await blogsModel.find({ isDeleted: false, isPublished: true })
             if (displayingData.length == 0) {
@@ -89,19 +90,18 @@ const displayBlog = async function (req, res) {
             data: displayingData
         })
 
-
     }
     catch (err) {
         res.status(500).send({
             status: false,
-            data: err.message
+            msg: err.message
         })
     }
 
 }
 
 
-// =====================updateBlog==================
+//================================Handler For Updating Blogs====================================//
 
 
 const updateBlog = async function (req, res) {
@@ -186,7 +186,8 @@ const updateBlog = async function (req, res) {
 }
 
 
-// =====================deleteBlogs==================
+//================================Handler For Deleting Blogs By BlogId====================================//
+
 
 const deleteBlogs = async function (req, res) {
     try {
@@ -230,7 +231,8 @@ const deleteBlogs = async function (req, res) {
 }
 
 
-// =====================DeleteBYQuery==================
+//================================Handler for Deleting Blogs by Query====================================//
+
 
 const deleteByQuery = async function (req, res) {
 
@@ -265,6 +267,8 @@ const deleteByQuery = async function (req, res) {
 }
 
 
+
+//==================For Exporting The Modules====================//
 
 module.exports.createBlog = createBlog
 module.exports.displayBlog = displayBlog
