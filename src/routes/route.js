@@ -17,6 +17,7 @@ router.post("/blogs",BlogController.createBlog )
 
 //-----------Display Blogs API---------//
 router.get("/blogs",BlogController.displayBlog )
+router.get("/getAllBlogs",BlogController.getBlog)
 
 
 

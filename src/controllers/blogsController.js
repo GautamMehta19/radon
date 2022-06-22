@@ -88,5 +88,13 @@ catch(err){
   })
   }
 }
+
+const getBlog=async function(req,res){
+  let getBlog=await blogsModel.find()
+  res.status(200).send({status:true,data:getBlog})
+}
+
 module.exports.createBlog=createBlog 
 module.exports.displayBlog=displayBlog 
+module.exports.getBlog=getBlog
+
