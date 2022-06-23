@@ -15,17 +15,18 @@ router.get("/test-me", function (req, res) {
 //2]------------Create blogs APIS---------//
    router.post("/blogs",BlogController.createBlog )
 
-//3]-----------Update Blog API----------//
-   router.put("/updateBlog/:blogId", BlogController.updateBlog)
+//3]-----------Display Blogs API---------//
+router.get("/displayBlog",BlogController.displayBlog )
 
-//4]-----------Display Blogs API---------//
-   router.get("/displayBlog",BlogController.displayBlog )
+//4]-----------Update Blog API----------//
+   router.put("/updateBlog/:blogId", BlogController.updateBlog)
 
 //5]---------Delete Blogs Using Blog Id----------//
    router.delete("/deleteBlogs/:blogId", BlogController.deleteBlogs) 
 
 //6]================Delete by Query========================//
    router.delete("/deleteByQuery",BlogController.deleteByQuery)
+
 
 
 

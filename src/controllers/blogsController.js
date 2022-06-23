@@ -2,9 +2,7 @@ const blogsModel = require("../models/blogsModel")
 const AuthorModel = require("../models/AuthorModel")
 
 
-//================================Handler For Creating Blogs====================================//
-
-
+//--------------------Handler For Creating Blogs--------------------------//
 const createBlog = async function (req, res) {
     try {
         let blog = req.body
@@ -13,6 +11,12 @@ const createBlog = async function (req, res) {
             return res.send({
                 status: false,
                 msg: "Author ID required"
+            })
+        }
+        if (!author_Id.match(/^[0-9a-f]{24}$/)) {
+            return res.status(400).send({
+                status: false,
+                msg: "Not a valid ObjectId"
             })
         }
 
@@ -25,25 +29,25 @@ const createBlog = async function (req, res) {
         }
 
 
-        if (!blog.title) {
+        if (!blog.title || (typeof (blog.title) != "string")) {
             return res.status(400).send({
                 status: false,
-                msg: "Title is Mandatory"
+                msg: "Title is Missing or has invali entry"
             })
         }
 
-        if (!blog.body) {
+        if (!blog.body || (typeof (blog.body) != "string")) {
             return res.status(400).send({
                 status: false,
-                msg: "Body is Mandatory"
+                msg: "Body is Missing or has invalid entry"
             })
         }
 
 
-        if (!blog.category) {
+        if (!blog.category || (typeof (blog.category) != "string")) {
             return res.status(400).send({
                 status: false,
-                msg: "category is Mandatory"
+                msg: "Cateegory is missing or has invalid entry"
             })
         };
 
@@ -58,27 +62,20 @@ const createBlog = async function (req, res) {
 }
 
 
-//================================Handler For Displaying Blogs====================================//
 
-
+//---------------------Handler For Displaying Blogs----------------------//
 const displayBlog = async function (req, res) {
     try {
         let filterCondition = req.query
-        console.log(filterCondition)
-        if (Object.keys(filterCondition).length == 0) {
-            let displayingData = await blogsModel.find({ isDeleted: false, isPublished: true })
-            if (displayingData.length == 0) {
-                return res.status(404).send({
+        if (filterCondition.authorId) {
+            if (!filterCondition.authorId.match(/^[0-9a-f]{24}$/)) {
+                return res.status(400).send({
                     status: false,
-                    msg: "No documents found 1"
+                    msg: "Not a valid ObjectId"
                 })
             }
-            return res.status(200).send({
-                status: true,
-                data: displayingData
-            })
         }
-        let displayingData = await blogsModel.find({ $and: [filterCondition, { isDeleted: false }, { isPublished: true }] })
+        let displayingData = await blogsModel.find({ $and: [filterCondition, { isDeleted: false }, { isPublished: true },] })
         if (displayingData.length == 0) {
             return res.status(404).send({
                 status: false,
@@ -89,7 +86,6 @@ const displayBlog = async function (req, res) {
             status: true,
             data: displayingData
         })
-
     }
     catch (err) {
         res.status(500).send({
@@ -97,13 +93,9 @@ const displayBlog = async function (req, res) {
             msg: err.message
         })
     }
-
 }
 
-
-//================================Handler For Updating Blogs====================================//
-
-
+//-----------------------Handler For Updating Blogs------------------------//
 const updateBlog = async function (req, res) {
 
     try {
@@ -121,7 +113,7 @@ const updateBlog = async function (req, res) {
                 msg: "BlogId is required"
             })
         }
-        if (!requestBlogId.match(/^[0-9a-f]{24}$/)) {
+        if (!requestBlogId.match(/^[a-0-9f]{24}$/)) {
             return res.status(400).send({
                 status: false,
                 msg: "Not a valid ObjectId"
@@ -134,6 +126,7 @@ const updateBlog = async function (req, res) {
                 msg: "Request Id not Found"
             })
         }
+
         let updatedBlog
         if (newTags) {
             let updatedTags = updateId.tags
@@ -185,10 +178,7 @@ const updateBlog = async function (req, res) {
 
 }
 
-
-//================================Handler For Deleting Blogs By BlogId====================================//
-
-
+//---------------------------Handler For Deleting Blogs By BlogId-----------------------------//
 const deleteBlogs = async function (req, res) {
     try {
         let requestBlogId = req.params.blogId
@@ -218,8 +208,7 @@ const deleteBlogs = async function (req, res) {
             { new: true, upsert: true }
         )
         res.status(200).send({
-            status: true,
-            data: deleteBlog
+            status: true
         })
     }
     catch (err) {
@@ -228,7 +217,9 @@ const deleteBlogs = async function (req, res) {
             msg: err.message
         })
     }
+
 }
+
 
 
 //================================Handler for Deleting Blogs by Query====================================//
@@ -239,6 +230,20 @@ const deleteByQuery = async function (req, res) {
     try {
 
         let data = req.query;
+        if (Object.keys(data).length == 0) {
+            return res.status(400).send({
+                status: false,
+                msg: "Provide information for deletion"
+            })
+        }
+        if (data.authorId) {
+            if (!data.authorId.match(/^[0-9a-f]{24}$/)) {
+                return res.status(400).send({
+                    status: false,
+                    msg: "Not a valid ObjectId"
+                })
+            }
+        }
 
         const deleteByQuery = await blogsModel.updateMany(
 
@@ -249,29 +254,31 @@ const deleteByQuery = async function (req, res) {
             { new: true })
 
         if (deleteByQuery.modifiedCount == 0)
-            return res.status(400).send(
+            return res.status(404).send(
                 {
                     status: false,
-                    msg: "The Blog is already Deleted"
+                    msg: "No Blog Found"
                 })
 
-        res.status(200).send({ status: true, msg: deleteByQuery })
+        res.status(200).send({ status: true })
     }
 
     catch (err) {
         res.status(500).send({
             status: false,
-            error: err.message
+            msg: err.message
         })
     }
 }
 
 
 
-//==================For Exporting The Modules====================//
 
+
+//For Exporting The Modules
 module.exports.createBlog = createBlog
 module.exports.displayBlog = displayBlog
 module.exports.updateBlog = updateBlog
 module.exports.deleteBlogs = deleteBlogs
 module.exports.deleteByQuery = deleteByQuery
+
