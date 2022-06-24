@@ -58,8 +58,10 @@ const authoriseByPath = async function (req, res, next) {
 
 const authoriseByQuery = async function (req, res, next) {
     try {
-        let authorLoggedIn = req.token.authorId
+        let authorLoggedIn = req.token.authorId    //Accessing authorId from attribute
+
         let conditions = req.query
+        //Checks if condition for deletion is coming or not
         if (Object.keys(conditions).length == 0) {
             return res.status(400).send({
                 status: false,
@@ -84,7 +86,7 @@ const authoriseByQuery = async function (req, res, next) {
         let authorAccessing = await blogsModel.find({ $and: [conditions, { isDeleted: false }] })
        
         if (authorAccessing.length == 0) {
-            return res.status(400).send({
+            return res.status(404).send({
                 status: false,
                 msg: "No Blogs Found"
             })
@@ -107,6 +109,6 @@ const authoriseByQuery = async function (req, res, next) {
         res.status(500).send({ msg: err.message })
     }
 }
-
+//Exportimg the modules
 module.exports.jwtValidation = jwtValidation
 module.exports.authoriseByPath = authoriseByPath

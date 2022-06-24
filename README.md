@@ -147,3 +147,5 @@ let deleteBlog = await blogsModel.findOneAndUpdate(
             { isDeleted: true, deletedAt: Date.now() },
             { new: true, upsert: true }
 )
+
+if (Object.keys(data).length == 0)
