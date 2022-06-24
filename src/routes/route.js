@@ -11,30 +11,23 @@ router.get("/test-me", function (req, res) {
     res.send("My first ever api!")
 })
 
-//1]-----------Create Authors APi----------//
-   router.post("/authors", AuthorController.authors)
-
-//2]------------Create blogs APIS---------//
-   router.post("/blogs",BlogController.createBlog )
-
 
 //-----------Create Authors APi----------//
 router.post("/authors", AuthorController.authors)
 //------------Create blogs APIS---------//
 router.post("/blogs",MidController.jwtValidation ,BlogController.createBlog )
 
-
-// -----------Display Blogs API---------//
-router.get("/displayBlog",BlogController.displayBlog )
+//-----------Display Blogs API---------//
+router.get("/blogs",MidController.jwtValidation,BlogController.displayBlog )
 
 //-----------Update Blog API----------//
-   router.put("/updateBlog/:blogId", BlogController.updateBlog)
+router.put("/blogs/:blogId", MidController.jwtValidation, MidController.authoriseByPath, BlogController.updateBlog) 
 
 //---------Delete Blogs Using Blog Id----------//
-   router.delete("/deleteBlogs/:blogId", BlogController.deleteBlogs) 
+router.delete("/blogs/:blogId",MidController.jwtValidation, MidController.authoriseByPath, BlogController.deleteBlogs) 
 
-//================Delete by Query========================//
-   router.delete("/deleteByQuery",BlogController.deleteByQuery)
+//====================Delete by Query====================//
+router.delete("/blogs",MidController.jwtValidation, MidController.authoriseByQuery, BlogController.deleteByQuery)
 
 //=====================LOGIN USER========================//
 router.post("/login",AuthorController.loginUser)
