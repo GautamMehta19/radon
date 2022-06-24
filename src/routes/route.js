@@ -5,6 +5,8 @@ const AuthorController= require("../controllers/AuthorController")
 
 const BlogController=require("../controllers/blogsController")
 
+const MidController = require("../Middleware/Auth")
+
 router.get("/test-me", function (req, res) {
     res.send("My first ever api!")
 })
@@ -19,7 +21,7 @@ router.get("/test-me", function (req, res) {
 //-----------Create Authors APi----------//
 router.post("/authors", AuthorController.authors)
 //------------Create blogs APIS---------//
-router.post("/blogs",BlogController.createBlog )
+router.post("/blogs",MidController.jwtValidation ,BlogController.createBlog )
 
 
 // -----------Display Blogs API---------//

@@ -102,31 +102,14 @@ const loginUser = async function (req, res) {
         },
         "project-1"
     )
-    res.setHeader("x-auth-token", token);
+    res.setHeader("x-api-token", token);
     res.status(200).send({
         status: true,
         token: token
     })
 };
 
-const authorisedUser = function(req, res) {
-    let token = req.headers["x-Auth-token"];
-    if (!token) token = req.headers["x-auth-token"];
-    if (!token) return res.send({ status: false, msg: "token must be present" });
-    console.log(token);
-  
-    let decodedToken = jwt.verify(token, "project-1");
-    if (!decodedToken) {
-      return res.send({ status: false, msg: "token is invalid" });
-    }
-    
-    let userToBeModified = req.params.userId
-    let userLoggedIn = decodedToken.userId
-    if(userToBeModified != userLoggedIn) return res.send({status: false, msg: 'User logged is not allowed to modify the requested users data'})
-}
-
 
 //For Exporting The Modules
 module.exports.authors = authors
 module.exports.loginUser = loginUser
-module.exports.authorisedUser = authorisedUser
