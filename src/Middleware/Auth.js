@@ -55,5 +55,58 @@ const authoriseByPath = async function (req, res, next) {
 }
 
 
+
+const authoriseByQuery = async function (req, res, next) {
+    try {
+        let authorLoggedIn = req.token.authorId
+        let conditions = req.query
+        if (Object.keys(conditions).length == 0) {
+            return res.status(400).send({
+                status: false,
+                msg: "Provide information for deletion"
+            })
+        }
+        if (conditions.authorId) {
+            if (!conditions.authorId.match(/^[0-9a-f]{24}$/)) {
+                return res.status(400).send({
+                    status: false,
+                    msg: "Not a valid ObjectId"
+                })
+            }
+
+            if (conditions.authorId != authorLoggedIn) {
+                return res.status(403).send({
+                    status: false,
+                    msg: 'Author not authorised'
+                })
+            }
+        }
+        let authorAccessing = await blogsModel.find({ $and: [conditions, { isDeleted: false }] })
+       
+        if (authorAccessing.length == 0) {
+            return res.status(400).send({
+                status: false,
+                msg: "No Blogs Found"
+            })
+        }
+
+        let accessedBlog = authorAccessing.filter(blogs => blogs.authorId == authorLoggedIn)
+        
+        if (accessedBlog.length == 0) {
+            return res.status(403).send({
+                status: false,
+                msg: "User Not Authorised"
+            })
+        }
+        req.id = authorLoggedIn
+        next()
+
+    }
+    catch (err) {
+        console.log("this error is from authorisation ", err.message)
+        res.status(500).send({ msg: err.message })
+    }
+}
+
 module.exports.jwtValidation = jwtValidation
 module.exports.authoriseByPath = authoriseByPath

@@ -129,3 +129,21 @@ Refer below sample
 #### Refer https://jsonplaceholder.typicode.com/guide/ for some fake blogs data.
 
 #### Note: Create a group database and use the same database in connection string by replacing `groupXDatabase
+
+
+
+
+
+let data = req.body.fname
+let checkEmail = await AuthorModel.findOne({ email: data.email })
+let author = await AuthorModel.findOne({ email: userName, password: password });
+authorId: author._id.toString(),
+res.setHeader("x-api-token", token);
+
+let author = await AuthorModel.findById(author_Id)
+let displayingData = await blogsModel.find({ $and: [filterCondition, { isDeleted: false }, { isPublished: true },] })
+let deleteBlog = await blogsModel.findOneAndUpdate(
+            { _id: requestBlogId },
+            { isDeleted: true, deletedAt: Date.now() },
+            { new: true, upsert: true }
+)
