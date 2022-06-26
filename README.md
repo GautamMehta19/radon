@@ -149,3 +149,12 @@ let deleteBlog = await blogsModel.findOneAndUpdate(
 )
 
 if (Object.keys(data).length == 0)
+
+let data = req.query
+        const deleteByQuery = await blogsModel.updateMany(
+  
+        { $and: [data ,{authorId : req.id}, { isDeleted: false }] },
+  
+        { $set: { isDeleted: true ,deletedAt:new Date()} },
+  
+        { new: true })
