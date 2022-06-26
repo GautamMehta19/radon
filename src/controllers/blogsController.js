@@ -47,24 +47,28 @@ const createBlog= async function (req, res) {
         return arr.length == f_arr.length
     }
     //validation for tags 
-    if(isValid(blog.tags) == false){
+    if(blog.tags) {
+        if(isValid(blog.tags) == false){
         return res.status(400).send({
             status : false,
             msg : "Invalid input for tags"
         })
+        }
     }
     //validation for sub-category
-    if(isValid(blog.subcategory) == false){
+    if(blog.subcategory){
+        if(isValid(blog.subcategory) == false){
         return res.status(400).send({
             status : false,
             msg : "Invalid input for subcategory"
         })
+        }
     }
     // Validation for Category
     if(!blog.category || (typeof(blog.category) != "string") || (blog.category.trim().length == 0)){
         return res.status(400).send({
         status:false,
-        msg:"Cateegory is missing or has invalid entry"
+        msg:"Category is missing or has invalid entry"
     })};
 
     
@@ -75,7 +79,7 @@ const createBlog= async function (req, res) {
     })
     }
     catch (err) {
-        console.log("Eror:", err.message)
+        console.log("Erorr is from Create Blogs:", err.message)
         res.status(500).send({ 
             status : false,
             msg: "Error", error: err.message })
@@ -117,6 +121,7 @@ try{
 
 }
 catch(err){
+    console.log("Error is from display blogs", err.message)
   res.status(500).send({
     status : false,
     msg : err.message
@@ -209,6 +214,7 @@ const updateBlog = async function(req, res){
      })
  }
  catch(err){
+    console.log("Error is from update blogs", err.message)
   res.status(500).send({
    status : false,
    msg : err.message
@@ -239,6 +245,7 @@ const deleteBlogs = async function(req , res){
       res.status(200).send()
   }
   catch(err){
+    console.log("Error is from delete blogs by blogId", err.message)
      res.status(500).send({
       status : false,
       msg : err.message
@@ -258,7 +265,7 @@ const deleteByQuery = async function (req, res) {
   
         { $set: { isDeleted: true ,deletedAt:new Date()} },
   
-        { new: true })
+        { new: true, upsert : true })
   
         if (deleteByQuery.modifiedCount==0) 
         return res.status(404).send(
@@ -270,6 +277,7 @@ const deleteByQuery = async function (req, res) {
     }
   
     catch (err) {
+        console.log("Error is from delete blogs by query", err.message)
         res.status(500).send({
           status:false,
           msg: err.message 
