@@ -90,6 +90,9 @@ const displayBlog = async function (req, res){
 try{
     
     let filterCondition = req.query
+    if(!filterCondition.authorId){
+        return res.status(400).send({status:false, msg:"please provide any id"})
+    }
 
     //Validation If authorId is present
   if(filterCondition.authorId){
@@ -236,7 +239,7 @@ const deleteBlogs = async function(req , res){
           {isDeleted : true, deletedAt : Date.now()},
           {new : true, upsert : true}
       )
-      res.status(200).send()
+      res.status(200).send({status:true, data:requestBlogId})
   }
   catch(err){
      res.status(500).send({
