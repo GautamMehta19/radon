@@ -51,7 +51,7 @@ let createIntern = async function (req, res) {
 
             //check if mobile no is already in db or not ?
             findMobile = await internModel.findOne({ mobile: mobile })
-            if (findMobile) return res.status(400).send({ status: false, message: '  Mobile No is already used....' })
+            if (findMobile) return res.status(400).send({ status: false, message: 'Mobile No is already used....' })
 
             //check if college name is present in Db or not ?
             findCollege = await collegeModel.findOne({ name: collegeName, isDeleted: false })

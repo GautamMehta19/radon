@@ -1,5 +1,3 @@
-const { rest } = require("lodash");
-const { object } = require("webidl-conversions");
 const collageModel = require("../models/collegeModel")
 const internModel = require('../models/internModel')
 
@@ -73,7 +71,7 @@ let getcollegeDetails = async function (req, res) {
                   return res.status(400).send({ status: false, message: "Missing college name in quary param" });
 
             // if collegeName Is Present
-            let collegeData = await collageModel.findOne({ name: collegeName, isDeleted: false })
+            let collegeData = await collageModel.findOne({ name: collegeName, isDeleted: false }).lean()
             if (!collegeData) return res.status(404).send({ status: false, message: "College Not Found" });
 
             // is there store college Id
@@ -83,8 +81,10 @@ let getcollegeDetails = async function (req, res) {
             let internData = await internModel.find({ collegeId: collegedId, isDeleted: false }).select("name email mobile")
             if (internData.length == 0) return res.status(404).send({ status: false, message: "No intern Found" });
 
+            collegeData.interns=internData
+
             //  response all collage data
-            return res.status(200).send({ status: true, data: { "name": collegeData.name, "fullName": collegeData.fullName, "logoLink": collegeData.logoLink, "interns": internData } });
+            return res.status(200).send({ status: true, data: collegeData}) //{ "name": collegeData.name, "fullName": collegeData.fullName, "logoLink": collegeData.logoLink, "interns": internData } });
             
       }
       catch (err) {
